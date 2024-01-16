@@ -1,0 +1,32 @@
+---
+- name: "Login no ECR e implantação do container"
+  hosts: all
+  become: true
+  vars:
+    aws_access_key: "{{ AWS_KEY_ID }}"
+    aws_secret_key: "{{ AWS_SECRET_KEY }}"
+    aws_region: "us-east-2"
+    image_name: "rust-simple-api-template:latest"
+    container_name: "rust-simple-api-template
+    ecr_url: "271439737792.dkr.ecr.us-east-2.amazonaws.com"
+    container_env:
+      CHAT_GPT_TOKEN: "{{ CHAT_GPT_TOKEN }}"
+      DISCORD_TOKEN: "{{ DISCORD_TOKEN }}"
+
+  tasks:
+    - name: "Configure AWS CLI"
+      shell: "aws configure set aws_access_key_id {{ aws_access_key }} --profile pipeline && aws configure set aws_secret_access_key {{ aws_secret_key }} --profile pipeline && aws configure set region {{ aws_region }} --profile pipeline"
+    
+    - name: "Login into ECR Registry"
+      shell: "aws ecr get-login-password --region {{ aws_region }} --profile pipeline | docker login --username AWS --password-stdin {{ ecr_url }}"
+    
+    - name: "Deploy container"
+      docker_container:
+        name: "{{ container_name }}"
+        image: "{{ ecr_url }}/{{ image_name }}"
+        pull: yes
+        state: started
+        restart_policy: unless-stopped
+        recreate: yes
+        state: started
+        env: "{{ container_env }}"

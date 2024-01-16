@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  rust-simple-api:
+    container_name: rust-simple-api
+    build:
+      context: .
+      dockerfile: configs/docker/Dockerfile
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
+  rust-simple-api-mariadb:
+    network_mode: "host"
+    image: mariadb:latest
+    container_name: rust-simple-api-mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: "123"
+      MARIADB_DATABASE: "demo"
+    ports:
+      - 3306:3306
+    volumes:
+      - ./.data/:/var/lib/mysql
+
