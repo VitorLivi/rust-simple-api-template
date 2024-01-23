@@ -1,12 +1,5 @@
 version: "3.8"
 services:
-  rust-simple-api:
-    container_name: rust-simple-api
-    build:
-      context: .
-      dockerfile: configs/docker/Dockerfile
-    extra_hosts:
-        - "host.docker.internal:host-gateway"
   rust-simple-api-mariadb:
     network_mode: "host"
     image: mariadb:latest
@@ -18,4 +11,20 @@ services:
       - 3306:3306
     volumes:
       - ./.data/:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+  rust-simple-api:
+    depends_on: 
+      rust-simple-api-mariadb:
+        condition: service_healthy
+    container_name: rust-simple-api
+    build:
+      context: .
+      dockerfile: configs/docker/Dockerfile
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
+    environment:
+        DATABASE_URL: mysql://root:123@localhost/demo
 

@@ -1,5 +1,3 @@
-use crate::traits::service_trait::Service;
-
 pub struct EntityService {}
 
 impl EntityService {
@@ -12,5 +10,3 @@ impl EntityService {
         self
     }
 }
-
-impl Service for EntityService {}
