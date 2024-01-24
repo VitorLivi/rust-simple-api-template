@@ -1,7 +1,8 @@
-use crate::services::entity_service::EntityService;
 use crate::traits::controller_trait::Controller;
 use axum::{routing::get, routing::post, Json, Router};
 use serde_json::{json, Value};
+
+use crate::services::user_service::UserService;
 
 pub struct SimpleController {
     path: String,
@@ -17,7 +18,7 @@ impl SimpleController {
     }
 
     async fn do_something(body: Json<Value>) {
-        let entity_service = EntityService::new();
+        let entity_service = UserService::new();
         entity_service.do_something(body.get("message").unwrap().as_str().unwrap().to_string());
     }
 }

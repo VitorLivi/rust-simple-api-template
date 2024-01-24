@@ -1,8 +1,8 @@
-pub struct EntityService {}
+pub struct UserService {}
 
-impl EntityService {
-    pub fn new() -> EntityService {
-        EntityService {}
+impl UserService {
+    pub fn new() -> UserService {
+        UserService {}
     }
 
     pub fn do_something(&self, message: String) -> &Self {

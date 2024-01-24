@@ -1,1 +1,1 @@
-pub mod entity_model;
+pub mod user;
